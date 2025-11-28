@@ -1,10 +1,5 @@
-import { Pool } from 'pg';
 import { NextResponse } from 'next/server';
-
-// Create a connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+import { getPool } from '@/lib/db';
 
 // Simple in-memory rate limiting (for production, use Redis or a proper rate limiting service)
 const rateLimitMap = new Map();
@@ -54,29 +49,19 @@ const MAX_SCORE = 1000;
 // Maximum request body size (1KB)
 const MAX_BODY_SIZE = 1024;
 
-// Initialize the database table on first use
-async function ensureTableExists() {
-  try {
-    const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS high_scores (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(10) NOT NULL,
-        score INTEGER NOT NULL CHECK (score >= 0),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-      
-      CREATE INDEX IF NOT EXISTS idx_high_scores_score ON high_scores(score DESC);
-    `;
-    await pool.query(createTableQuery);
-  } catch (error) {
-    console.error('Error ensuring table exists:', error);
+// Helper function to get pool and ensure it exists
+function getDatabasePool() {
+  const pool = getPool();
+  if (!pool) {
+    throw new Error('Database is not configured. Please set DATABASE_URL environment variable.');
   }
+  return pool;
 }
 
 // GET: Fetch high scores (supports daily and all-time views)
 export async function GET(request) {
   try {
-    await ensureTableExists();
+    const pool = getDatabasePool();
 
     const { searchParams } = new URL(request.url);
     const modeParam = searchParams.get('mode') || 'today';
@@ -207,7 +192,7 @@ export async function POST(request) {
       );
     }
 
-    await ensureTableExists();
+    const pool = getDatabasePool();
 
     // Read and parse body with size limit
     const text = await request.text();

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 const RandomGifEffect = () => {
-  // Array des chemins vers les GIFs - vous pouvez en ajouter d'autres ici
+  // Array of paths to GIFs - you can add more here
   const gifPaths = [
     '/assets/blSTtZehjAZ8I.gif',
     '/assets/3EfgWHj0YIDrW.webp',
@@ -22,44 +22,44 @@ const RandomGifEffect = () => {
 
   const [gifs, setGifs] = useState([]);
   const nextIdRef = useRef(0);
-  const MAX_GIFS = 5; // Nombre maximum de GIFs affichés simultanément
+  const MAX_GIFS = 5; // Maximum number of GIFs displayed simultaneously
 
-  // Types de mouvements aléatoires
+  // Types of random movements
   const getRandomMovement = () => {
     const movements = [
-      'float', // Flotte doucement
-      'spin', // Tourne
-      'bounce', // Rebondit
-      'diagonal', // Déplacement diagonal
-      'wave', // Vague
+      'float', // Floats gently
+      'spin', // Spins
+      'bounce', // Bounces
+      'diagonal', // Diagonal movement
+      'wave', // Wave
       'zigzag', // Zigzag
     ];
     return movements[Math.floor(Math.random() * movements.length)];
   };
 
-  // Génère une position aléatoire (10-90% pour éviter les bords)
+  // Generate a random position (10-90% to avoid edges)
   const getRandomPosition = () => ({
     left: Math.random() * 80 + 10,
     top: Math.random() * 80 + 10,
   });
 
-  // Ajoute un nouveau GIF
+  // Add a new GIF
   const addGif = () => {
     if (gifPaths.length === 0) return;
 
-    // Vérifie si on a atteint la limite de GIFs
+    // Check if we've reached the GIF limit
     setGifs((prevGifs) => {
       if (prevGifs.length >= MAX_GIFS) {
-        return prevGifs; // Ne pas ajouter de nouveau GIF si on a atteint la limite
+        return prevGifs; // Don't add a new GIF if we've reached the limit
       }
 
       const randomGif = gifPaths[Math.floor(Math.random() * gifPaths.length)];
       const position = getRandomPosition();
       const movement = getRandomMovement();
       const size = 100 + Math.random() * 200; // 100-300px
-      const lifetime = 3000 + Math.random() * 7000; // 3-10 secondes avant de disparaître
-      const duration = lifetime / 1000; // Durée d'animation = durée de vie (en secondes pour CSS)
-      const rotation = Math.random() * 360; // Rotation initiale aléatoire
+      const lifetime = 3000 + Math.random() * 7000; // 3-10 seconds before disappearing
+      const duration = lifetime / 1000; // Animation duration = lifetime (in seconds for CSS)
+      const rotation = Math.random() * 360; // Random initial rotation
 
       const gifId = nextIdRef.current;
       nextIdRef.current += 1;
@@ -75,7 +75,7 @@ const RandomGifEffect = () => {
         rotation,
       };
 
-      // Retire le GIF après sa durée de vie
+      // Remove GIF after its lifetime
       setTimeout(() => {
         setGifs((prevGifs) => prevGifs.filter((gif) => gif.id !== gifId));
       }, lifetime);
@@ -87,7 +87,7 @@ const RandomGifEffect = () => {
   useEffect(() => {
     let currentTimer;
 
-    // Ajoute des GIFs à des intervalles aléatoires
+    // Add GIFs at random intervals
     const scheduleNextGif = () => {
       const delay = 2000 + Math.random() * 4000; // 2-6 secondes
       currentTimer = setTimeout(() => {
@@ -103,7 +103,7 @@ const RandomGifEffect = () => {
         clearTimeout(currentTimer);
       }
     };
-  }, []); // Array vide - s'exécute une seule fois
+  }, []); // Empty array - runs only once
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-30">
@@ -146,7 +146,7 @@ const RandomGifEffect = () => {
           100% { opacity: 0; transform: scale(0.5); }
         }
 
-        /* Mouvement: Flotter */
+        /* Movement: Float */
         .gif-float {
           animation-name: fadeInOut, float;
         }
@@ -155,7 +155,7 @@ const RandomGifEffect = () => {
           50% { transform: translateY(-20px); }
         }
 
-        /* Mouvement: Tourner */
+        /* Movement: Spin */
         .gif-spin {
           animation-name: fadeInOut, spin;
         }
@@ -164,7 +164,7 @@ const RandomGifEffect = () => {
           100% { transform: rotate(360deg); }
         }
 
-        /* Mouvement: Rebondir */
+        /* Movement: Bounce */
         .gif-bounce {
           animation-name: fadeInOut, bounce;
         }
@@ -175,7 +175,7 @@ const RandomGifEffect = () => {
           75% { transform: translateY(-7px); }
         }
 
-        /* Mouvement: Diagonal */
+        /* Movement: Diagonal */
         .gif-diagonal {
           animation-name: fadeInOut, diagonal;
         }
@@ -184,7 +184,7 @@ const RandomGifEffect = () => {
           50% { transform: translate(30px, 30px); }
         }
 
-        /* Mouvement: Vague */
+        /* Movement: Wave */
         .gif-wave {
           animation-name: fadeInOut, wave;
         }
@@ -195,7 +195,7 @@ const RandomGifEffect = () => {
           75% { transform: translate(-15px, -15px) rotate(-5deg); }
         }
 
-        /* Mouvement: Zigzag */
+        /* Movement: Zigzag */
         .gif-zigzag {
           animation-name: fadeInOut, zigzag;
         }

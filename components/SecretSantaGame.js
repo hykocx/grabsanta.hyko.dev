@@ -27,7 +27,7 @@ const SecretSantaGame = () => {
   const [newScoreId, setNewScoreId] = useState(null);
   const [leaderboardMode, setLeaderboardMode] = useState('today'); // 'today' or 'daily-winners'
   const [viewOnlyMode, setViewOnlyMode] = useState(false); // For viewing leaderboard without playing
-  const [playerRank, setPlayerRank] = useState(null); // Position du joueur dans le classement
+  const [playerRank, setPlayerRank] = useState(null); // Player's position in the leaderboard
   const nextClickIdRef = useRef(0);
   const nextBadEmojiIdRef = useRef(0);
   const moveIntervalRef = useRef(null);
@@ -37,14 +37,14 @@ const SecretSantaGame = () => {
   const badEmojiIntervalRef = useRef(null);
 
   const encouragements = [
-    "🎉 Wow! Rapide!",
-    "🎄 Incroyable!",
+    "🎉 Wow! Fast!",
+    "🎄 Incredible!",
     "⭐ Super!",
-    "🎁 Génial!",
-    "❄️ Fantastique!",
+    "🎁 Great!",
+    "❄️ Fantastic!",
     "🎅 Ho ho ho!",
-    "✨ Bravo!",
-    "🔥 En feu!",
+    "✨ Well done!",
+    "🔥 On fire!",
     "💪 Champion!",
     "🎊 Excellent!"
   ];
@@ -52,15 +52,15 @@ const SecretSantaGame = () => {
   const badEmojiList = ['👻', '🙀', '🙊', '🐧', '🍎', '🍒', '🍿'];
   
   const badMessages = [
-    "😱 Oh non!",
-    "💥 Raté!",
-    "😵 Aïe!",
-    "🙈 Dommage!",
-    "⚠️ Attention!",
-    "❌ Oups!"
+    "😱 Oh no!",
+    "💥 Missed!",
+    "😵 Ouch!",
+    "🙈 Too bad!",
+    "⚠️ Watch out!",
+    "❌ Oops!"
   ];
 
-  // Détecte si l'appareil est mobile
+  // Detect if device is mobile
   useEffect(() => {
     const checkMobile = () => {
       const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
@@ -74,7 +74,7 @@ const SecretSantaGame = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Déplace Santa vers une nouvelle position aléatoire
+  // Move Santa to a new random position
   const moveSanta = () => {
     const newX = Math.random() * 85 + 5; // 5-90%
     const newY = Math.random() * 85 + 5; // 5-90%
@@ -211,7 +211,7 @@ const SecretSantaGame = () => {
     setShowLeaderboard(true);
   };
 
-  // Démarre le timer
+  // Start the timer
   useEffect(() => {
     if (gameStarted && !gameOver) {
       timerIntervalRef.current = setInterval(() => {
@@ -233,14 +233,14 @@ const SecretSantaGame = () => {
     };
   }, [gameStarted, gameOver]);
 
-  // Démarre le mouvement automatique de Santa (seulement quand le jeu a commencé)
+  // Start automatic Santa movement (only when game has started)
   useEffect(() => {
     if (isActive && gameStarted) {
-      // Santa bouge beaucoup plus souvent sur mobile pour augmenter la difficulté
+      // Santa moves much more often on mobile to increase difficulty
       const scheduleNextMove = () => {
         const delay = isMobile 
-          ? 400 + Math.random() * 1500  // Mobile: 0.8-2 secondes (très rapide et fréquent!)
-          : 2500 + Math.random() * 2500; // Desktop: 2.5-5 secondes (plus lent)
+          ? 400 + Math.random() * 1500  // Mobile: 0.8-2 seconds (very fast and frequent!)
+          : 2500 + Math.random() * 2500; // Desktop: 2.5-5 seconds (slower)
         moveIntervalRef.current = setTimeout(() => {
           moveSanta();
           scheduleNextMove();
@@ -256,20 +256,20 @@ const SecretSantaGame = () => {
     };
   }, [isActive, gameStarted, isMobile]);
 
-  // Affiche périodiquement "Attrape moi" avant le début du jeu
+  // Periodically display "Catch me" before game starts
   useEffect(() => {
     if (!gameStarted && !gameOver) {
       const showHintMessage = () => {
         setShowHint(true);
         setTimeout(() => {
           setShowHint(false);
-        }, 2000); // Le message reste visible 2 secondes
+        }, 2000); // Message stays visible for 2 seconds
       };
 
-      // Affiche le message immédiatement au début
+      // Display message immediately at start
       const initialTimeout = setTimeout(showHintMessage, 1000);
 
-      // Puis le réaffiche toutes les 12 secondes
+      // Then redisplay every 12 seconds
       hintIntervalRef.current = setInterval(showHintMessage, 12000);
 
       return () => {
@@ -281,7 +281,7 @@ const SecretSantaGame = () => {
     }
   }, [gameStarted, gameOver]);
 
-  // Génère des mauvais émojis pendant la partie
+  // Generate bad emojis during the game
   useEffect(() => {
     if (gameStarted && !gameOver) {
       const spawnBadEmoji = () => {
@@ -295,20 +295,20 @@ const SecretSantaGame = () => {
         
         setBadEmojis((prev) => [...prev, newBadEmoji]);
         
-        // Retire le mauvais emoji après 2-3 secondes s'il n'a pas été cliqué
+        // Remove bad emoji after 2-3 seconds if it hasn't been clicked
         setTimeout(() => {
           setBadEmojis((prev) => prev.filter((emoji) => emoji.id !== newBadEmoji.id));
         }, 2000 + Math.random() * 1000);
       };
 
-      // Premier mauvais emoji après 3 secondes
+      // First bad emoji after 3 seconds
       const initialTimeout = setTimeout(spawnBadEmoji, 3000);
       
-      // Emojis négatifs apparaissent plus souvent sur mobile pour ajouter de la difficulté
+      // Negative emojis appear more often on mobile to add difficulty
       const scheduleNextBadEmoji = () => {
         const delay = isMobile
-          ? 2500 + Math.random() * 2500  // Mobile: 2.5-5 secondes (plus fréquent)
-          : 3000 + Math.random() * 3000; // Desktop: 3-6 secondes
+          ? 2500 + Math.random() * 2500  // Mobile: 2.5-5 seconds (more frequent)
+          : 3000 + Math.random() * 3000; // Desktop: 3-6 seconds
         badEmojiIntervalRef.current = setTimeout(() => {
           spawnBadEmoji();
           scheduleNextBadEmoji();
@@ -326,21 +326,21 @@ const SecretSantaGame = () => {
     }
   }, [gameStarted, gameOver, isMobile]);
 
-  // Gère le clic sur Santa
+  // Handle click on Santa
   const handleClick = (e) => {
     e.stopPropagation();
     
     if (gameOver) return;
 
-    // Démarre le jeu au premier clic
+    // Start game on first click
     if (!gameStarted) {
       setGameStarted(true);
     }
     
-    // Augmente le score
+    // Increase score
     setScore((prevScore) => prevScore + 1);
 
-    // Affiche un message d'encouragement
+    // Display encouragement message
     const randomEncouragement = encouragements[Math.floor(Math.random() * encouragements.length)];
     setEncouragementText(randomEncouragement);
     setShowEncouragement(true);
@@ -352,7 +352,7 @@ const SecretSantaGame = () => {
       setShowEncouragement(false);
     }, 1000);
 
-    // Ajoute un effet visuel au clic
+    // Add visual effect to click
     const clickId = nextClickIdRef.current;
     nextClickIdRef.current += 1;
     
@@ -364,28 +364,28 @@ const SecretSantaGame = () => {
     
     setClicks((prevClicks) => [...prevClicks, clickEffect]);
     
-    // Retire l'effet après l'animation
+    // Remove effect after animation
     setTimeout(() => {
       setClicks((prevClicks) => prevClicks.filter((click) => click.id !== clickId));
     }, 1000);
 
-    // Santa s'enfuit immédiatement!
+    // Santa runs away immediately!
     moveSanta();
   };
 
-  // Gère le clic sur un mauvais emoji
+  // Handle click on bad emoji
   const handleBadEmojiClick = (e, badEmojiId) => {
     e.stopPropagation();
     
     if (gameOver) return;
 
-    // Retire le mauvais emoji
+    // Remove bad emoji
     setBadEmojis((prev) => prev.filter((emoji) => emoji.id !== badEmojiId));
 
-    // Perd un point (mais ne descend pas en dessous de 0)
+    // Lose a point (but don't go below 0)
     setScore((prevScore) => Math.max(0, prevScore - 1));
 
-    // Affiche un message négatif
+    // Display negative message
     const randomBadMessage = badMessages[Math.floor(Math.random() * badMessages.length)];
     setEncouragementText(randomBadMessage);
     setShowEncouragement(true);
@@ -397,7 +397,7 @@ const SecretSantaGame = () => {
       setShowEncouragement(false);
     }, 1000);
 
-    // Ajoute un effet visuel au clic (négatif)
+    // Add visual effect to click (negative)
     const clickId = nextClickIdRef.current;
     nextClickIdRef.current += 1;
     
@@ -410,13 +410,13 @@ const SecretSantaGame = () => {
     
     setClicks((prevClicks) => [...prevClicks, clickEffect]);
     
-    // Retire l'effet après l'animation
+    // Remove effect after animation
     setTimeout(() => {
       setClicks((prevClicks) => prevClicks.filter((click) => click.id !== clickId));
     }, 1000);
   };
 
-  // Nettoie les timeouts
+  // Clean up timeouts
   useEffect(() => {
     return () => {
       if (encouragementTimeoutRef.current) {
@@ -425,7 +425,7 @@ const SecretSantaGame = () => {
     };
   }, []);
 
-  // Fonction pour recommencer le jeu
+  // Function to restart the game
   const restartGame = () => {
     setScore(0);
     setGameStarted(false);
@@ -472,14 +472,14 @@ const SecretSantaGame = () => {
           </div>
         )}
 
-        {/* Score Display - Affiché uniquement quand le jeu a commencé */}
+        {/* Score Display - Only shown when game has started */}
         {gameStarted && (
           <div className="bg-black text-white px-2 py-1 sm:px-4 sm:py-2 rounded-full shadow-lg font-bold text-sm sm:text-lg border-2 border-white">
             🎅 <span className="hidden xs:inline">Score: </span>{score}
           </div>
         )}
 
-        {/* High Score Display - Affiche le meilleur score du jour pendant la partie */}
+        {/* High Score Display - Shows today's best score during the game */}
         {gameStarted && !gameOver && highScores.length > 0 && (
           <div className="text-yellow-500 px-2 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-lg border-2 border-yellow-500">
             🏆 {highScores[0].score}
@@ -503,21 +503,21 @@ const SecretSantaGame = () => {
             </div>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-400 mb-2 sm:mb-3 tracking-wider">
               {playerRank === 1 && 'HIGH SCORE!'}
-              {playerRank === 2 && 'PRESQUE #1!'}
-              {playerRank === 3 && '3ÈME PLACE!'}
+              {playerRank === 2 && 'ALMOST #1!'}
+              {playerRank === 3 && '3RD PLACE!'}
               {playerRank > 3 && 'TOP 10!'}
             </h2>
             {playerRank && (
               <p className="text-sm sm:text-base text-green-400 mb-2 tracking-wide">
-                {playerRank === 1 && '★ NOUVEAU RECORD DU JOUR ★'}
-                {playerRank === 2 && '★ 2ÈME MEILLEUR SCORE ★'}
-                {playerRank === 3 && '★ 3ÈME MEILLEUR SCORE ★'}
-                {playerRank > 3 && `★ ${playerRank}ÈME PLACE ★`}
+                {playerRank === 1 && '★ NEW DAILY RECORD ★'}
+                {playerRank === 2 && '★ 2ND BEST SCORE ★'}
+                {playerRank === 3 && '★ 3RD BEST SCORE ★'}
+                {playerRank > 3 && `★ ${playerRank}TH PLACE ★`}
               </p>
             )}
             <div className="bg-neutral-900 rounded-lg p-2 sm:p-3 mb-2 sm:mb-3 border border-yellow-600">
               <p className="text-base sm:text-lg text-yellow-400 mb-2">SCORE: {score}</p>
-              <p className="text-sm sm:text-base text-green-400 mb-2 sm:mb-3">ENTRE TON NOM</p>
+              <p className="text-sm sm:text-base text-green-400 mb-2 sm:mb-3">ENTER YOUR NAME</p>
               
               <div className="flex flex-col sm:flex-row justify-center items-center gap-2 mb-2 sm:mb-3">
                 <input
@@ -526,7 +526,7 @@ const SecretSantaGame = () => {
                   onChange={handleNameInput}
                   onKeyPress={handleNameKeyPress}
                   maxLength={10}
-                  placeholder="JOUEUR"
+                  placeholder="PLAYER"
                   autoFocus
                   className="bg-black border-2 border-green-500 text-green-400 text-lg sm:text-xl font-bold text-center px-3 py-2 rounded tracking-widest uppercase focus:outline-none focus:border-yellow-400 animate-blink-cursor w-full sm:w-auto"
                   style={{ fontFamily: 'monospace' }}
@@ -534,7 +534,7 @@ const SecretSantaGame = () => {
                 <span className="text-green-500 text-sm sm:text-base">{playerName.length}/10</span>
               </div>
               
-              <p className="text-xs text-gray-500 mb-2">Utilise A-Z, espaces autorisés</p>
+              <p className="text-xs text-gray-500 mb-2">Use A-Z, spaces allowed</p>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
@@ -543,13 +543,13 @@ const SecretSantaGame = () => {
                 disabled={playerName.trim().length === 0 || isSavingScore}
                 className="cursor-pointer bg-green-600 text-white font-bold px-4 sm:px-6 py-2 rounded border-2 border-green-400 hover:bg-green-500 hover:scale-105 transition-all text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                {isSavingScore ? 'SAUVEGARDE...' : '✓ SAUVEGARDER'}
+                {isSavingScore ? 'SAVING...' : '✓ SAVE'}
               </button>
               <button
                 onClick={skipSaveScore}
                 className="cursor-pointer bg-gray-700 text-white font-bold px-4 sm:px-6 py-2 rounded border-2 border-gray-500 hover:bg-gray-600 hover:scale-105 transition-all text-sm sm:text-base"
               >
-                ✕ PASSER
+                ✕ SKIP
               </button>
             </div>
           </div>
@@ -561,19 +561,19 @@ const SecretSantaGame = () => {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-2 sm:p-4 overflow-y-auto">
           <div className="bg-black border-2 border-yellow-400 p-3 sm:p-5 rounded-lg text-center max-w-2xl w-full transform animate-gameOverBounce font-mono my-2">
             <div className="text-3xl sm:text-4xl mb-2 sm:mb-3 animate-spin-slow">🎅</div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-400 mb-2 sm:mb-3 tracking-wider">CLASSEMENT</h2>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-400 mb-2 sm:mb-3 tracking-wider">LEADERBOARD</h2>
             
             {gameOver && !viewOnlyMode && (
               <div className="bg-neutral-950/90 rounded-lg p-2 sm:p-3 mb-2 sm:mb-3 border border-neutral-800">
-                <p className="text-sm sm:text-base text-gray-300 mb-1">Ton Score:</p>
+                <p className="text-sm sm:text-base text-gray-300 mb-1">Your Score:</p>
                 <p className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)]">{score}</p>
                 <div className="mt-1 sm:mt-2">
-                  {score === 0 && <p className="text-gray-300 text-xs sm:text-sm">🎄 Essaie encore!</p>}
-                  {score > 0 && score <= 5 && <p className="text-gray-300 text-xs sm:text-sm">🎁 Pas mal! Continue!</p>}
-                  {score > 5 && score <= 10 && <p className="text-gray-300 text-xs sm:text-sm">⭐ Bien joué!</p>}
-                  {score > 10 && score <= 15 && <p className="text-yellow-400 text-xs sm:text-sm">🎉 Super score!</p>}
-                  {score > 15 && score <= 20 && <p className="text-yellow-400 text-xs sm:text-sm">🔥 Incroyable!</p>}
-                  {score > 20 && <p className="text-yellow-400 text-sm sm:text-base font-bold">👑 CHAMPION! Tu es un pro!</p>}
+                  {score === 0 && <p className="text-gray-300 text-xs sm:text-sm">🎄 Try again!</p>}
+                  {score > 0 && score <= 5 && <p className="text-gray-300 text-xs sm:text-sm">🎁 Not bad! Keep going!</p>}
+                  {score > 5 && score <= 10 && <p className="text-gray-300 text-xs sm:text-sm">⭐ Well played!</p>}
+                  {score > 10 && score <= 15 && <p className="text-yellow-400 text-xs sm:text-sm">🎉 Great score!</p>}
+                  {score > 15 && score <= 20 && <p className="text-yellow-400 text-xs sm:text-sm">🔥 Incredible!</p>}
+                  {score > 20 && <p className="text-yellow-400 text-sm sm:text-base font-bold">👑 CHAMPION! You're a pro!</p>}
                 </div>
               </div>
             )}
@@ -588,7 +588,7 @@ const SecretSantaGame = () => {
                     : 'bg-neutral-800 text-gray-400 border-2 border-neutral-600 hover:bg-neutral-700'
                 }`}
               >
-                🎯 AUJOURD'HUI
+                🎯 TODAY
               </button>
               <button
                 onClick={() => setLeaderboardMode('daily-winners')}
@@ -605,13 +605,13 @@ const SecretSantaGame = () => {
             {/* Today's High Scores Table */}
             {leaderboardMode === 'today' && highScores.length > 0 && (
               <div className="bg-neutral-900 rounded-lg p-2 sm:p-3 mb-2 sm:mb-3 border border-green-600">
-                <h3 className="text-sm sm:text-base md:text-lg font-bold text-green-400 mb-2 tracking-wider">TOP 10 DU JOUR</h3>
+                <h3 className="text-sm sm:text-base md:text-lg font-bold text-green-400 mb-2 tracking-wider">TODAY'S TOP 10</h3>
                 <div className="overflow-y-auto max-h-48 sm:max-h-56">
                   <table className="w-full text-left">
                     <thead>
                       <tr className="text-green-400 border-b-2 border-green-600">
-                        <th className="py-1 px-1 sm:px-2 text-center text-xs sm:text-sm">RANG</th>
-                        <th className="py-1 px-1 sm:px-2 text-xs sm:text-sm">NOM</th>
+                        <th className="py-1 px-1 sm:px-2 text-center text-xs sm:text-sm">RANK</th>
+                        <th className="py-1 px-1 sm:px-2 text-xs sm:text-sm">NAME</th>
                         <th className="py-1 px-1 sm:px-2 text-right text-xs sm:text-sm">SCORE</th>
                       </tr>
                     </thead>
@@ -648,14 +648,14 @@ const SecretSantaGame = () => {
             {/* Daily Winners Table */}
             {leaderboardMode === 'daily-winners' && (
               <div className="bg-neutral-900 rounded-lg p-2 sm:p-3 mb-2 sm:mb-3 border border-yellow-600">
-                <h3 className="text-sm sm:text-base md:text-lg font-bold text-yellow-400 mb-2 tracking-wider">CHAMPIONS QUOTIDIENS</h3>
+                <h3 className="text-sm sm:text-base md:text-lg font-bold text-yellow-400 mb-2 tracking-wider">DAILY CHAMPIONS</h3>
                 {dailyWinners.length > 0 ? (
                   <div className="overflow-y-auto max-h-48 sm:max-h-56">
                     <table className="w-full text-left">
                       <thead>
                         <tr className="text-yellow-400 border-b-2 border-yellow-600">
                           <th className="py-1 px-1 sm:px-2 text-xs sm:text-sm">DATE</th>
-                          <th className="py-1 px-1 sm:px-2 text-xs sm:text-sm">NOM</th>
+                          <th className="py-1 px-1 sm:px-2 text-xs sm:text-sm">NAME</th>
                           <th className="py-1 px-1 sm:px-2 text-right text-xs sm:text-sm">SCORE</th>
                         </tr>
                       </thead>
@@ -672,7 +672,7 @@ const SecretSantaGame = () => {
                           const isToday = date.getDate() === today.getDate() && 
                                          date.getMonth() === today.getMonth() && 
                                          date.getFullYear() === today.getFullYear();
-                          const formattedDate = date.toLocaleDateString('fr-FR', { 
+                          const formattedDate = date.toLocaleDateString('en-US', { 
                             day: '2-digit', 
                             month: '2-digit'
                           });
@@ -702,7 +702,7 @@ const SecretSantaGame = () => {
                     </table>
                   </div>
                 ) : (
-                  <p className="text-gray-400 text-xs sm:text-sm py-2">Aucun champion pour le moment!</p>
+                  <p className="text-gray-400 text-xs sm:text-sm py-2">No champions yet!</p>
                 )}
               </div>
             )}
@@ -711,7 +711,7 @@ const SecretSantaGame = () => {
               onClick={viewOnlyMode ? closeLeaderboard : restartGame}
               className="cursor-pointer bg-white text-black font-bold px-4 sm:px-6 py-2 sm:py-3 rounded-lg border-2 border-yellow-400 hover:bg-yellow-400 hover:scale-110 transition-all text-sm sm:text-base"
             >
-              {viewOnlyMode ? 'FERMER' : 'RETOUR'}
+              {viewOnlyMode ? 'CLOSE' : 'BACK'}
             </button>
           </div>
         </div>
@@ -724,7 +724,7 @@ const SecretSantaGame = () => {
             onClick={viewLeaderboard}
             className="cursor-pointer bg-black/60 hover:bg-black/80 text-yellow-400 border border-yellow-400/50 hover:border-yellow-400 px-3 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all hover:scale-105 backdrop-blur-sm"
           >
-            🏆 Classement
+            🏆 Leaderboard
           </button>
         </div>
       )}
@@ -757,8 +757,8 @@ const SecretSantaGame = () => {
             top: `${position.y}%`,
             transform: 'translate(-50%, -50%)',
             transitionDuration: isMobile 
-              ? (isRunningAway ? '100ms' : '100ms')  // Très rapide sur mobile - presque instantané
-              : (isRunningAway ? '500ms' : '300ms') // Normal sur desktop
+              ? (isRunningAway ? '100ms' : '100ms')  // Very fast on mobile - almost instant
+              : (isRunningAway ? '500ms' : '300ms') // Normal on desktop
           }}
           onClick={handleClick}
         >
@@ -766,16 +766,16 @@ const SecretSantaGame = () => {
             <div className="text-5xl sm:text-6xl drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] hover:drop-shadow-[0_0_20px_rgba(255,215,0,1)] transition-all">
               🎅
             </div>
-            {/* Message périodique avant le début du jeu */}
+            {/* Periodic message before game starts */}
             {!gameStarted && showHint && (
               <div className="absolute -top-10 sm:-top-12 left-1/2 transform -translate-x-1/2 bg-white text-red-600 px-3 py-1 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold whitespace-nowrap shadow-lg animate-bounce">
-                Attrape moi! 👆
+                Catch me! 👆
               </div>
             )}
-            {/* Petit message au survol - plus subtil */}
+            {/* Small hover message - more subtle */}
             {gameStarted && (
               <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white text-red-600 px-2 py-1 rounded text-xs font-bold whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity">
-                Attrape-moi! 🎁
+                Catch me! 🎁
               </div>
             )}
           </div>
@@ -799,7 +799,7 @@ const SecretSantaGame = () => {
               {badEmoji.emoji}
             </div>
             <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-2 py-1 rounded text-xs font-bold whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity">
-              Évite-moi! ⚠️
+              Avoid me! ⚠️
             </div>
           </div>
         </div>

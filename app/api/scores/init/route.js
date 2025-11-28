@@ -1,10 +1,5 @@
-import { Pool } from 'pg';
 import { NextResponse } from 'next/server';
-
-// Create a connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+import { initializeDatabase, getPool } from '@/lib/db';
 
 // Simple protection: only allow initialization in development or with a secret token
 function isAuthorized(request) {
@@ -31,19 +26,19 @@ export async function GET(request) {
   }
 
   try {
-    // Create the high_scores table if it doesn't exist
-    const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS high_scores (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(10) NOT NULL,
-        score INTEGER NOT NULL CHECK (score >= 0),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    // Use the centralized initialization function
+    await initializeDatabase();
+    
+    const pool = getPool();
+    if (!pool) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Database is not configured. Please set DATABASE_URL environment variable.',
+        },
+        { status: 500 }
       );
-      
-      CREATE INDEX IF NOT EXISTS idx_high_scores_score ON high_scores(score DESC);
-    `;
-
-    await pool.query(createTableQuery);
+    }
 
     return NextResponse.json({
       success: true,

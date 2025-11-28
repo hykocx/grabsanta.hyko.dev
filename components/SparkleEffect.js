@@ -4,24 +4,24 @@ import React, { useMemo } from 'react';
 
 const SparkleEffect = () => {
   const colors = [
-    'rgba(255, 50, 100, 0.15)',    // Rose vif
-    'rgba(100, 150, 255, 0.15)',   // Bleu ciel
-    'rgba(255, 200, 50, 0.15)',    // Or
-    'rgba(150, 100, 255, 0.15)',   // Violet
+    'rgba(255, 50, 100, 0.15)',    // Bright pink
+    'rgba(100, 150, 255, 0.15)',   // Sky blue
+    'rgba(255, 200, 50, 0.15)',    // Gold
+    'rgba(150, 100, 255, 0.15)',   // Purple
     'rgba(50, 255, 200, 0.15)',    // Turquoise
     'rgba(255, 150, 50, 0.15)',    // Orange
-    'rgba(255, 100, 200, 0.15)',   // Rose magenta
-    'rgba(100, 255, 150, 0.15)',   // Vert menthe
-    'rgba(200, 100, 255, 0.15)',   // Violet clair
-    'rgba(255, 255, 100, 0.15)',   // Jaune citron
+    'rgba(255, 100, 200, 0.15)',   // Magenta pink
+    'rgba(100, 255, 150, 0.15)',   // Mint green
+    'rgba(200, 100, 255, 0.15)',   // Light purple
+    'rgba(255, 255, 100, 0.15)',   // Lemon yellow
   ];
 
   const sparkles = useMemo(() => {
     return Array.from({ length: 40 }, (_, i) => {
-      const duration = 6 + Math.random() * 6; // 6-12s - beaucoup plus lent!
+      const duration = 6 + Math.random() * 6; // 6-12s - much slower!
       const delay = Math.random() * 8; // 0-8s
-      const size = 30 + Math.random() * 270; // 30-300px - grande variation!
-      const blur = 15 + Math.random() * 40; // 15-55px de blur
+      const size = 30 + Math.random() * 270; // 30-300px - great variation!
+      const blur = 15 + Math.random() * 40; // 15-55px blur
       const color = colors[Math.floor(Math.random() * colors.length)];
       
       return {

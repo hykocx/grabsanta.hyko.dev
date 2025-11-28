@@ -44,6 +44,14 @@ A festive Santa catching game made with Next.js and Tailwind CSS, featuring an a
   - If set, the `/api/scores/init` endpoint requires `Authorization: Bearer <token>` header
   - If not set, the endpoint is only available in development mode
 
+## Architecture
+
+The application uses Next.js instrumentation hooks to initialize the database connection pool at server startup:
+
+- `instrumentation.js` - Initializes database on server start
+- `lib/db.js` - Centralized database connection pool management
+- Database tables are automatically created on first use
+
 ## Security Features
 
 - ✅ Rate limiting on POST requests (10 requests per minute per IP)
@@ -53,3 +61,4 @@ A festive Santa catching game made with Next.js and Tailwind CSS, featuring an a
 - ✅ Score validation with maximum limit
 - ✅ Protected database initialization endpoint
 - ✅ Error message sanitization (no sensitive details exposed)
+- ✅ Centralized database connection pool management
