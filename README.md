@@ -26,12 +26,7 @@ A festive Santa catching game made with Next.js and Tailwind CSS, featuring an a
    ```
 4. Set the following environment variables:
    - `DATABASE_URL`: PostgreSQL connection string (required)
-   - `INIT_SECRET_TOKEN`: Optional secret token for database initialization endpoint (recommended for production)
-5. Initialize the database (optional, tables are created automatically):
-   ```bash
-   curl http://localhost:3000/api/scores/init
-   ```
-6. Run the development server:
+5. Run the development server:
    ```bash
    npm run dev
    ```
@@ -40,9 +35,6 @@ A festive Santa catching game made with Next.js and Tailwind CSS, featuring an a
 
 - `DATABASE_URL` (required): PostgreSQL connection string
   - Format: `postgresql://username:password@host:port/database`
-- `INIT_SECRET_TOKEN` (optional): Secret token for protecting the database initialization endpoint
-  - If set, the `/api/scores/init` endpoint requires `Authorization: Bearer <token>` header
-  - If not set, the endpoint is only available in development mode
 
 ## Architecture
 
