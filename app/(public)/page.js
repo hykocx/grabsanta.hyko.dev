@@ -18,7 +18,7 @@ const Page = () => {
         
         const calculateTimeLeft = () => {
             const currentYear = new Date().getFullYear();
-            const targetDate = new Date(`${currentYear}-12-24T00:00:00`); // Christmas day
+            const targetDate = new Date(`${currentYear}-12-25T00:00:00`); // Christmas day (December 25th at midnight)
             const now = new Date();
             const difference = targetDate - now;
 
