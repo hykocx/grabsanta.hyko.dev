@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Animations personnalisées */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes titleBounce {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    10% {
+        transform: translateY(-10px) scale(1.05);
+    }
+    20% {
+        transform: translateY(0) scale(1);
+    }
+    30% {
+        transform: translateY(-5px) scale(1.02);
+    }
+    40% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes numberPop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+        filter: brightness(1.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes partyTime {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.1) rotate(-5deg);
+    }
+    50% {
+        transform: scale(1.2) rotate(0deg);
+    }
+    75% {
+        transform: scale(1.1) rotate(5deg);
+    }
+}
+
+.animate-gradientShift {
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+}
+
+.animate-titleBounce {
+    animation: titleBounce 3s ease-in-out infinite;
+}
+
+.animate-slideUp {
+    animation: slideUp 0.6s ease-out forwards;
+}
+
+.animate-numberPop {
+    animation: numberPop 0.3s ease-in-out;
+}
+
+.animate-partyTime {
+    animation: partyTime 1s ease-in-out infinite;
+}
+
+::selection {
+    background: transparent;
+}
